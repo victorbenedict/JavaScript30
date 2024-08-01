@@ -71,26 +71,65 @@
         'Beecher, Henry',
         'Biondo, Frank',
       ];
-
       // Array.prototype.filter()
       // 1. Filter the list of inventors for those who were born in the 1500's
+      const inventorsIn1500 = inventors.filter(
+        (inventor) => inventor.year >= 1500 && inventor.year < 1600
+      );
+      console.table(inventorsIn1500);
 
       // Array.prototype.map()
       // 2. Give us an array of the inventors first and last names
+      const inventorsFirstAndLastNames = inventors.map((inventor) => {
+        return `${inventor.first} ${inventor.last}`;
+      });
+      console.table(inventorsFirstAndLastNames);
 
       // Array.prototype.sort()
       // 3. Sort the inventors by birthdate, oldest to youngest
+      const inventorsOldtoYoung = inventors.sort((a, b) => b.year - a.year);
+      console.table(inventorsOldtoYoung);
 
       // Array.prototype.reduce()
       // 4. How many years did all the inventors live all together?
+      const inventorsTotalYears = inventors.reduce(
+        (total, inventor) => total + (inventor.passed - inventor.year),
+        0
+      );
+      console.log(inventorsTotalYears);
 
       // 5. Sort the inventors by years lived
+      const inventorsYearsLived = inventors.sort(
+        (a, b) => b.passed - b.year - (a.passed - a.year)
+      );
+      console.table(inventorsYearsLived);
 
       // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
       // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+      let boulevardsWithDe = [];
+      fetch(
+        'https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Boulevards_in_Paris&cmlimit=max&format=json&origin=*'
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const rawData = data.query.categorymembers;
+          const boulevards = rawData.map((data) => data.title);
+          boulevards
+            .filter((boulevard) => boulevard.includes('de'))
+            .forEach((boulevardWithDe) => {
+              boulevardsWithDe.push(boulevardWithDe);
+            });
+        })
+        .catch((error) => console.error('Error:', error));
 
+      console.log(boulevardsWithDe);
       // 7. sort Exercise
       // Sort the people alphabetically by last name
+
+      const inventorsSortAlpha = inventors
+        .map((inventor) => `${inventor.last}, ${inventor.first}`)
+        .sort();
+      console.table(inventorsSortAlpha);
 
       // 8. Reduce Exercise
       // Sum up the instances of each of these
@@ -110,6 +149,14 @@
         'car',
         'truck',
       ];
+
+      const dataInstances = {};
+      data.forEach((item) => {
+        if (!obj[item]) dataInstances[item] = 0;
+        dataInstances[item] += 1;
+      });
+
+      console.log(dataInstances);
     </script>
   </body>
 </html>
